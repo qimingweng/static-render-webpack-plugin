@@ -4,7 +4,7 @@
 
 In your webpack config file...
 
-```
+```javascript
 const routes = [
 	'/',
 	'/about',
