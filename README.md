@@ -1,6 +1,6 @@
 # Static Render Webpack Plugin
 
-[See on NPM](https://www.npmjs.com/package/static-render-webpack-plugin)
+[![npm](https://img.shields.io/npm/v/static-render-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/static-render-webpack-plugin)
 
 ## Usage
 
