@@ -1,5 +1,7 @@
 # Static Render Webpack Plugin
 
+[https://www.npmjs.com/package/static-render-webpack-plugin](See on NPM)
+
 ## Usage
 
 In your webpack config file...
