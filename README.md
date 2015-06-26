@@ -1,6 +1,6 @@
 # Static Render Webpack Plugin
 
-[https://www.npmjs.com/package/static-render-webpack-plugin](See on NPM)
+[See on NPM](https://www.npmjs.com/package/static-render-webpack-plugin)
 
 ## Usage
 
