@@ -4,7 +4,7 @@
 
 ## Usage
 
-You can check out [this tutorial](http://www.qimingweng.com/writing/webpack-static-render) for a real usage example, or read below for documentation.
+You can check out [this tutorial](http://www.qimingweng.com/writing/webpack-static-render) for a real world usage example, or read below for documentation.
 
 In your webpack config file...
 
