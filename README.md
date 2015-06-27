@@ -81,9 +81,11 @@ An array of either string routes, ex. `/`, `/about`, `/deep/route`. Or route obj
 
 #### props
 
-`Any?`
+`Any|Function`
 
 This property is passed to your javascript bundle as the 2nd parameter in the exported function. It can be anything.
+
+If props is a function, the function is executed (with no parameters) every time a file needs to be rendered. This way, if you have static assets you want webpack to watch (markdown files, for instance), you can load them in with a function instead, and each time webpack compiles, the props will be different.
 
 #### watchFiles
 
