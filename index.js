@@ -39,7 +39,7 @@ function StaticRenderWebpackPlugin(bundlePath, outputRule, props, watchFiles) {
 StaticRenderWebpackPlugin.prototype.apply = function(compiler) {
   var self = this;
 
-  compiler.plugin('emit', function(compiler, done) {
+  compiler.plugin('after-compile', function(compiler, done) {
     // Keep an eye on these file paths, and recompile in watch mode if they change
     if (Array.isArray(self.watchFiles)) {
       self.watchFiles.forEach(function(src) {
@@ -47,48 +47,57 @@ StaticRenderWebpackPlugin.prototype.apply = function(compiler) {
       });
     }
 
-    try {
-      var sourceAsset = compiler.assets[self.bundlePath];
+    var sourceAsset = compiler.assets[self.bundlePath];
 
-      if (!sourceAsset) {
-        throw new Error('Source file not found: "' + self.bundlePath + '"');
-      }
+    if (sourceAsset) {
+      try {
+        var source = sourceAsset.source(); // The string content of the bundle
 
-      var source = sourceAsset.source(); // The string content of the bundle
+        // The source file is expected to return a module function by default
+        // This function takes two parameters, a local and a callback
 
-      // The source file is expected to return a module function by default
-      // This function takes two parameters, a local and a callback
+        // Using evaluate to retrieve the exported function from the source file
+        var render = evaluate(
+          /* source: */ source, 
+          /* filename: */ self.bundlePath, 
+          /* scope: */ undefined, 
+          /* noGlobals: */ true);
 
-      // Using evaluate to retrieve the exported function from the source file
-      var render = evaluate(
-        /* source: */ source, 
-        /* filename: */ self.bundlePath, 
-        /* scope: */ undefined, 
-        /* noGlobals: */ true);
+        var renderPromises = self.outputRules.map(function(outputRule) {
+          var renderPath = getInputPath(outputRule);
+          var outputFilePath = getOutputPath(outputRule);
 
-      var renderPromises = self.outputRules.map(function(outputRule) {
-        var renderPath = getInputPath(outputRule);
-        var outputFilePath = getOutputPath(outputRule);
+          return Q.Promise(function(resolve) {
+            /**
+             * Props is either an object or a function which returns a value
+             */
+            var props = self.props;
 
-        return Q.Promise(function(resolve) {
-          render(renderPath, self.props, function(htmlString) {
-            resolve(htmlString);
+            if (typeof props == 'function') {
+              props = props();
+            }
+
+            render(renderPath, props, function(htmlString) {
+              resolve(htmlString);
+            });
+          }).then(function(result) {
+            // Save the new file created
+            compiler.assets[outputFilePath] = createAssetFromContents(result);
+          }).fail(function(error) {
+            // Catch errors here and print them in webpack's error handler, without stopping webpack-dev-server
+            compiler.errors.push(error);
           });
-        }).then(function(result) {
-          // Save the new file created
-          compiler.assets[outputFilePath] = createAssetFromContents(result);
-        }).fail(function(error) {
-          // Catch errors here and print them in webpack's error handler, without stopping webpack-dev-server
-          compiler.errors.push(error);
         });
-      });
 
-      Q.all(renderPromises).then(function() {
+        Q.all(renderPromises).then(function() {
+          done();
+        });
+      } catch (err) {
+        // Catch errors here and print them in webpack's error handler, without stopping webpack-dev-server
+        compiler.errors.push(err);
         done();
-      });
-    } catch (err) {
-      // Catch errors here and print them in webpack's error handler, without stopping webpack-dev-server
-      compiler.errors.push(err);
+      }
+    } else {
       done();
     }
   });
