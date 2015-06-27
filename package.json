@@ -1,6 +1,6 @@
 {
   "name": "static-render-webpack-plugin",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Generates a series of static routes for a website, given an array of routes",
   "main": "index.js",
   "scripts": {
