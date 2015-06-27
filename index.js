@@ -19,7 +19,7 @@ var path = require('path');
  * callback, a function to be called with the return html string
  */
 
-function StaticRenderWebpackPlugin(bundlePath, outputRule, props) {
+function StaticRenderWebpackPlugin(bundlePath, outputRule, props, watchFiles) {
   this.bundlePath = bundlePath;
 
   /**
@@ -31,12 +31,22 @@ function StaticRenderWebpackPlugin(bundlePath, outputRule, props) {
 
   // Initial props is an object passed into the render function
   this.props = props;
+
+  // An array of file paths to keep an eye on for changes
+  this.watchFiles = watchFiles;
 }
 
 StaticRenderWebpackPlugin.prototype.apply = function(compiler) {
   var self = this;
 
   compiler.plugin('emit', function(compiler, done) {
+    // Keep an eye on these file paths, and recompile in watch mode if they change
+    if (Array.isArray(self.watchFiles)) {
+      self.watchFiles.forEach(function(src) {
+        compiler.fileDependencies.push(src);
+      });
+    }
+
     try {
       var sourceAsset = compiler.assets[self.bundlePath];
 

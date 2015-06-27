@@ -52,6 +52,47 @@ module.exports = function(path, props, callback) {
 }
 ```
 
+### Advanced
+
+`StaticSiteGeneratorPlugin` is a constructor that takes up to 4 arguments.
+
+```javascript
+new StaticSiteGeneratorPlugin(source, routes, props, watchFiles)
+```
+
+#### source
+
+`String`
+
+The route to the javascript file
+
+#### routes
+
+`Array<String|RouteObject>`
+
+An array of either string routes, ex. `/`, `/about`, `/deep/route`. Or route objects, which follow this syntax:
+
+```
+{
+  path: String // ex, '/', '/about'
+  output: String // ex, '/404.html', '/deep/custom.file'
+}
+```
+
+#### props
+
+`Any?`
+
+This property is passed to your javascript bundle as the 2nd parameter in the exported function. It can be anything.
+
+#### watchFiles
+
+`Array<String>?`
+
+This is optional. You can define an array of paths to files that you want the compiler to add to its dependencies. This way, when running webpack in watch mode, or webpack-dev-server, the files which are not in the javascript dependency tree will also be watched and can cause recompilation.
+
+I use this to generate blog posts from .md files.
+
 ## Isomorphic Javascript
 
 If you use React and React-Router, then your entry.js file might look something like this:
