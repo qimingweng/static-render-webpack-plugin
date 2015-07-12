@@ -115,8 +115,8 @@ module.exports = function(path, props, callback) {
 
 if (typeof document != 'undefined') {
   /**
-   * Running in a web environment, re-render the entire tree onto the document, 
-   * react will be able to tell that what you are trying to render is exactly the same and 
+   * Running in a web environment, re-render the entire tree onto the document,
+   * react will be able to tell that what you are trying to render is exactly the same and
    * adjust itself accordingly
    */
   Router.run(routes, Router.HistoryLocation, (Root) => {
@@ -124,3 +124,7 @@ if (typeof document != 'undefined') {
   });
 }
 ```
+
+# Using Static Render with React Hot Loader
+
+Yes! This is possible. Look at this boilerplate project to see how: [static-render-react-hot](https://github.com/qimingweng/static-render-react-hot)
